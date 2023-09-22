@@ -19,12 +19,15 @@ test_tab = [[1,0,1,0,1], [0,1,0,1,0], [1,1,1,0,0], [0,0,1,1,1], [0,0,0,0,0]]  # 
 r,c = np.shape(test_tab)
 # Number of qubits
 n = int((c-1)/2)
+# Variable to keep track wether Case A has happened to know if Case B has to be executed
+var=0
 
 # p is an element in the tableau in the range of x_(n+1)1 to x_(2n)1 
-for x in range(n,2*n-1):
+for x in range(n,2*n+1):
     
     # Case A: an element of the tableau in the range of x_(n+1)1 to x_(2n)1 has the value 1
     if test_tab[x][0]==1:
+        var=1
         print("Case A")
         # Case A
         # In this case the measurement outcome is 
@@ -35,12 +38,12 @@ for x in range(n,2*n-1):
         
         # Second, set entire the (p−n)th row equal to the pth row.
         # (Set every element in the row p-n equal to its equivalent element in row p)
-        for y in range(0,2*n):
+        for y in range(0,2*n+1):
             test_tab[x-n][y]=test_tab[x][y]
         
         # Third, set the pth row to be identically 0, except that r_p is 0 or 1 with equal probability, and z_pa=1.
         # (Set every element in row p equal to 0)
-        for y in range(0,2*n):
+        for y in range(0,2*n+1):
             test_tab[x][y]=0
         # (Set r_p (the last element in row p) equal to 0 or 1)
         test_tab[x][2*n]=random.randint(0,1)
@@ -52,22 +55,23 @@ for x in range(n,2*n-1):
         print(outcome)
         print(test_tab)
         break
-    
-    # Case B: there is NO element of the tableau in the range of x_(n+1)1 to x_(2n)1 with the value 1
-    else:
-        print("Case B")
-        # Case B
-        # In this case the outcome is determinate, so measuring the state will not change it; the
-        # only task is to determine whether 0 or 1 is observed. This is done as follows: 
-        
-        # First set the (2n+1)st row to be identically 0. 
-        for y in range(0,2*n):
-            test_tab[2*n][y]=0
 
-        # Second, call rowsum(2n+1,i+n) for all i in {1,...,n} such that x_ia=1. 
-            # ...
+
+# Case B: there is NO element of the tableau in the range of x_(n+1)1 to x_(2n)1 with the value 1
+if var==0:
+    print("Case B")
+    # Case B
+    # In this case the outcome is determinate, so measuring the state will not change it; the
+    # only task is to determine whether 0 or 1 is observed. This is done as follows: 
         
-        # Finally, return r_2n+1 as the measurement outcome
-        outcome = test_tab[2*n][2*n]
-        print(outcome)
-        print(test_tab)
+    # First set the (2n+1)st row to be identically 0. 
+    for y in range(0,2*n+1):
+        test_tab[2*n][y]=0
+       
+    # Second, call rowsum(2n+1,i+n) for all i in {1,...,n} such that x_ia=1. 
+        # ...
+        
+    # Finally, return r_2n+1 as the measurement outcome
+    outcome = test_tab[2*n][2*n]
+    print(outcome)
+    print(test_tab)
