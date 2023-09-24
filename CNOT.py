@@ -5,7 +5,7 @@ import tableau
 def updateCNOT(tab, control, target):
     size = tab.getTableauSize()
     tableau = tab.getTableau()
-    t = np.logical_xor(tableau[:, control + size], np.ones((1,2*size)))
+    t = np.logical_xor(tableau[:, control + size], np.ones((1,2*size + 1)))
     t = np.logical_xor(tableau[:, target], t)
     t = np.logical_and(tableau[:, control], np.logical_and(tableau[:, target + size], t))
     tableau[:, 2*size] = np.logical_xor(tableau[:, 2*size], t)
@@ -15,6 +15,7 @@ def updateCNOT(tab, control, target):
 
 # create tableau with n=2
 tab = tableau.Tableau(2)
+
 # Apply CNOT update rules on tableau with control bit 0, target bit 1
 updateCNOT(tab, 0, 1)
 print(tab.getTableau())
