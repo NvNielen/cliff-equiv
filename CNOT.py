@@ -14,7 +14,7 @@ def updateCNOT(tab, control, target):
     return tableau
 
 # create tableau with n=2
-tab = tableau.Tableau(2)
+#tab = tableau.Tableau(2)
 # Apply CNOT update rules on tableau with control bit 0, target bit 1
-updateCNOT(tab, 0, 1)
-print(tab.getTableau())
+#updateCNOT(tab, 0, 1)
+#print(tab.getTableau())
