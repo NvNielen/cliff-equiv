@@ -15,12 +15,10 @@ n=2
 
 tab=tableau.Tableau(n)
 
-
-
-H(tab,0)
-S(tab,0)
-S(tab,0)
+CN(tab,1,0)
+#H(tab, 0)
+#S(tab,0)
 print(tab.getTableau())
 print(tg(tab))
-#vg(tg(tab))
+vg(tg(tab))
 

@@ -30,7 +30,6 @@ def tableau_to_gen(tab):
                 gen=gen+"X"
             elif x==1 and z==1:
                 gen=gen+"Y"
-        print(gen)
         generators+=[gen]
     return generators
     
