@@ -8,13 +8,23 @@ import tableau
 def rowsum(tab, h, j):
     size = tab.getTableauSize()
     tableau = tab.getTableau()
+    # For all k ∈ {1, . . . , n} set x_h,k = x_j,k ⊕ x_h,k
     tableau[h, :size] = np.logical_xor(tableau[j, :size], tableau[h, :size])
+    
+    # For all k ∈ {1, . . . , n} set z_h,k = z_j,k ⊕ z_h,k
     tableau[h, size:2*size] = np.logical_xor(tableau[j, size:2*size], tableau[h, size:2*size])
+    
+    # g(x_1, z_1, x_2, z_2) = 
+    # 0, if x_1 = z_1 = 0 OR
+    # z_2 - x_2, if x_1 = z_1 = 1 OR
+    # z_2(2x_2 - 1), if x_1 = 1, z_1 = 0 OR
+    # x_2(1 - 2z_2), if x_1 = 0, z_1 = 1
     g = np.where(tableau[j, :size] == tableau[j, size:2*size],
                  np.where(tableau[j, :size] == 0, np.zeros((1, size)), tableau[h, size:2*size] - tableau[h, :size]),
                  np.where(tableau[j, :size] == 0, tableau[h, :size]*(1 - 2*tableau[h, size:2*size]),
                           tableau[h, size:2*size]*(1 - 2*tableau[h, :size]))
                 )
+    # r_h = ((2r_h + 2r_j + g) mod 4)/2
     tableau[h, 2*size] = ((2*tableau[h, 2*size] + 2*tableau[j, 2*size] + np.sum(g)) % 4)/2
 
 # Apply measurement gate update rules on qubit a for a given tableau
