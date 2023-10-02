@@ -7,12 +7,14 @@ class Tableau:
     def __init__(self, size):
         self.size = size
         self.clearTableau()
+    """GETTERS"""
     # Get tableau size (value)
     def getTableauSize(self):
         return self.size
     # Get tableau data structure (reference)
     def getTableau(self):
         return self.tableau
+    """METHODS"""
     # Convert tableau to a set of generators
     # return this set of generators
     def tableauToGenerators(self):
@@ -39,7 +41,7 @@ class Tableau:
     # store tableau in this class
     def generatorsToTableau(self):
         pass
-    # Clear tableau; reset to a 2nx2n identity matrix 
+    # Clear tableau; set to a 2nx2n identity matrix 
     # horizontally stacked with a 2nx1 phase vector of zeros
     # and 1x2n "scratch space" vertically stacked
     # Total: (2n + 1) * (2n + 1), where n is the tableau size
