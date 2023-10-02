@@ -161,6 +161,7 @@ class Circuit:
     # e.g. [0,1,2,2,1] -> CN on control qubit 1 and target qubit 0, then H on qubit 1
     def applyGates(self, gates):
         i = 0
+        # For each set of (gate, qubit(s)), check type and run corresponding update method
         while (i < gates.size):
             if gates[i] == constants.CGATE:
                 self.applyCN(gates[i+1], gates[i+2])
@@ -174,6 +175,10 @@ class Circuit:
             elif gates[i] == constants.MGATE:
                 self.applyM(gates[i+1])
                 i += 2
+        # Append gates to gates array
+        self.gates[self.gateIndex:self.gateIndex+gates.size] = gates
+        # Set gate index to new empty gate slot
+        self.gateIndex += gates.size
     # Clear generators array
     def clearGenerators(self):
         size = self.tableau.getTableauSize()
