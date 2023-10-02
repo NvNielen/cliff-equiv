@@ -9,4 +9,4 @@ CGATE = 0 # CNOT gate
 HGATE = 1 # Hadamard gate
 PGATE = 2 # Phase gate
 MGATE = 3 # Measurement gate
-GATELIMIT = 1000 # maximum number of gates that can be applied to a circuit
+GATELIMIT = 900 # maximum number of gates + qubit inputs that can be applied to a circuit

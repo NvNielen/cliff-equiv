@@ -7,5 +7,3 @@ Created on Mon Sep 25 13:25:12 2023
 import circuit
 
 # new test code here
-
-

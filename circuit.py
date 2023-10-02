@@ -13,6 +13,8 @@ class Circuit:
         self.gates = np.zeros((constants.GATELIMIT))
         # Keeps track of index of next available gate slot in gates array
         self.gateIndex = 0
+        # Keeps track of number of gates
+        self.numberOfGates = 0
         # Store generators set to false by default
         self.storeGenerators = False
     """GETTERS"""
@@ -32,7 +34,7 @@ class Circuit:
     # Set storeGenerators boolean value
     def setStoreGenerators(self, value):
         if (value == True and not self.generators):
-            self.setGenerators()
+            self.clearGenerators()
         self.storeGenerators = value
     """METHODS"""
     # Apply the CNOT update rules on given tableau using control and target qubits (which are indices here)
@@ -83,7 +85,7 @@ class Circuit:
     # A helper function for applyM() that takes 4 bits as input, and that returns the exponent to which i is
     # raised (either 0, 1, or −1) when the Pauli matrices represented by x1z1 and x2z2 are multiplied
     # used for measurement gate update rules
-    def rowsum(tab, h, j):
+    def rowsum(self, h, j):
         size = self.size
         tableau = self.tableau.getTableau()
         
@@ -126,7 +128,7 @@ class Circuit:
             # First call rowsum(i,p) for all i in {1,...,2n} such that i=/=p and x_ia=1
             # Merge p (minus its first occurrence of 1, which is chosen to be p) and i into i and call rowsum
             if p.size > 1:
-                rowsum(tab, np.append(i, p[1:]), p[0])
+                self.rowsum(np.append(i, p[1:]), p[0])
             p = p[0]
             # Second, set entire the (p−n)th row equal to the pth row.
             # (Set every element in the row p-n equal to its equivalent element in row p)
@@ -151,7 +153,7 @@ class Circuit:
             tableau[size*2][:] = 0
             
             # Second, call rowsum(2n+1,i+n) for all i in {1,...,n} such that x_ia=1. 
-            rowsum(tab, size*2, i + size)
+            self.rowsum(size*2, i + size)
                 
             # Finally, return r_2n+1 as the measurement outcome
             return tableau[2*size][2*size]
@@ -175,15 +177,19 @@ class Circuit:
             elif gates[i] == constants.MGATE:
                 self.applyM(gates[i+1])
                 i += 2
+            self.numberOfGates += 1
+            if self.storeGenerators: # if store generators, retrieve generator sets after each gate
+                self.generators[self.numberOfGates,:,:] = self.tableau.tableauToGenerators()
         # Append gates to gates array
         self.gates[self.gateIndex:self.gateIndex+gates.size] = gates
         # Set gate index to new empty gate slot
         self.gateIndex += gates.size
-    # Clear generators array
+    # Clear/set generators array
     def clearGenerators(self):
         size = self.tableau.getTableauSize()
-        # Store n times nxn matrices of each state of the tableau in the circuit
-        self.generators = np.zeros((size,size,size))
+        # Store max number of gates times nxn matrices of each state of the tableau in the circuit
+        self.generators = np.zeros((round(constants.GATELIMIT/3),size,size))
+        self.generators[self.numberOfGates,:,:] = self.tableau.tableauToGenerators()
     # Clear gates array, then clear corresponding tableau and possibly generators array
     def clearGates(self):
         # GATELIMIT determines maximum number of gates that can be applied
