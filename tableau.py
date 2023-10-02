@@ -46,6 +46,6 @@ class Tableau:
     # and 1x2n "scratch space" vertically stacked
     # Total: (2n + 1) * (2n + 1), where n is the tableau size
     def clearTableau(self):
-        self.tableau = np.hstack(((np.identity(2*size)), np.zeros((2*size,1))))
-        self.tableau = np.vstack((self.tableau, np.zeros((1, 2*size + 1))))
+        self.tableau = np.hstack(((np.identity(2*self.size)), np.zeros((2*self.size,1))))
+        self.tableau = np.vstack((self.tableau, np.zeros((1, 2*self.size + 1))))
     pass

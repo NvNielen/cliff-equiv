@@ -21,6 +21,9 @@ class Circuit:
     # Get gates array
     def getGates(self):
         return self.gates
+    # Get total number of gates
+    def getNumberOfGates(self):
+        return self.numberOfGates
     # Get tableau
     def getTableau(self):
         return self.tableau
@@ -39,11 +42,11 @@ class Circuit:
     """METHODS"""
     # Apply the CNOT update rules on given tableau using control and target qubits (which are indices here)
     def applyCN(self, control, target):
-        size = self.size
+        size = self.tableau.getTableauSize()
         tableau = self.tableau.getTableau()
 
         # For all i in {1,...,2n}, set r_i = r_i ⊕ x_i,control*z_i,target(x_i,target ⊕ z_i,control ⊕ 1)
-        t = np.logical_xor(tableau[:2*size, control + size], np.ones((1,2*size + 1)))
+        t = np.logical_xor(tableau[:2*size, control + size], np.ones((1,2*size)))
         t = np.logical_xor(tableau[:2*size, target], t)
         t = np.logical_and(tableau[:2*size, control], np.logical_and(tableau[:2*size, target + size], t))
         tableau[:2*size, 2*size] = np.logical_xor(tableau[:2*size, 2*size], t)
@@ -55,7 +58,7 @@ class Circuit:
         tableau[:2*size, control + size] = np.logical_xor(tableau[:2*size, control + size], tableau[:2*size, target + size])
     # Apply the Hadamard gate to a qubit in the tableau
     def applyH(self, qubit):
-        size = self.size
+        size = self.tableau.getTableauSize()
         tableau = self.tableau.getTableau()
 
         # Extract xia and zia
@@ -70,7 +73,7 @@ class Circuit:
         tableau[:2*size, qubit + size] = xia
     # Apply CNOT gate update rules
     def applyP(self, qubit):
-        size = self.size
+        size = self.tableau.getTableauSize()
         tableau = self.tableau.getTableau()
 
         # Extract xia and zia
@@ -86,13 +89,13 @@ class Circuit:
     # raised (either 0, 1, or −1) when the Pauli matrices represented by x1z1 and x2z2 are multiplied
     # used for measurement gate update rules
     def rowsum(self, h, j):
-        size = self.size
+        size = self.tableau.getTableauSize()
         tableau = self.tableau.getTableau()
         
         # For all k ∈ {1, . . . , n} set x_h,k = x_j,k ⊕ x_h,k
         tableau[h, :size] = np.logical_xor(tableau[j, :size], tableau[h, :size])
         
-        # For all k ∈ {1, . . . , n} set z_h,k = z_j,k ⊕ z_h,k
+        # For all k ∈ {n, . . . , 2n} set z_h,k = z_j,k ⊕ z_h,k
         tableau[h, size:2*size] = np.logical_xor(tableau[j, size:2*size], tableau[h, size:2*size])
         
         # g(x_1, z_1, x_2, z_2) = 
@@ -110,7 +113,7 @@ class Circuit:
         tableau[h, 2*size] = ((2*tableau[h, 2*size] + 2*tableau[j, 2*size] + np.sum(g)) % 4)/2
     # Apply measurement gate update rules on qubit a for a given tableau
     def applyM(self, a):
-        size = self.size
+        size = self.tableau.getTableauSize()
         tableau = self.tableau.getTableau()
 
         # retrieve entire column of qubit
@@ -126,9 +129,8 @@ class Circuit:
             # In this case the measurement outcome is random, so the state needs to be updated.
             
             # First call rowsum(i,p) for all i in {1,...,2n} such that i=/=p and x_ia=1
-            # Merge p (minus its first occurrence of 1, which is chosen to be p) and i into i and call rowsum
-            if p.size > 1:
-                self.rowsum(np.append(i, p[1:]), p[0])
+            for item in np.append(i, p[1:]):
+                self.rowsum(item, p[0])
             p = p[0]
             # Second, set entire the (p−n)th row equal to the pth row.
             # (Set every element in the row p-n equal to its equivalent element in row p)
@@ -152,8 +154,9 @@ class Circuit:
             # First set the (2n+1)st row to be identically 0. 
             tableau[size*2][:] = 0
             
-            # Second, call rowsum(2n+1,i+n) for all i in {1,...,n} such that x_ia=1. 
-            self.rowsum(size*2, i + size)
+            # Second, call rowsum(2n+1,i+n) for all i in {1,...,n} such that x_ia=1.
+            for index in range(size):
+                self.rowsum(size*2, index + size)
                 
             # Finally, return r_2n+1 as the measurement outcome
             return tableau[2*size][2*size]
