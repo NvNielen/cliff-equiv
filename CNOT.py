@@ -3,12 +3,16 @@ import tableau
 
 # Apply the CNOT update rules on given tableau using control and target qubits (which are indices here)
 def updateCNOT(tab, control, target):
-    size = tab.getTableauSize()
-    tableau = tab.getTableau()
-    t = np.logical_xor(tableau[:, control + size], np.ones((1,2*size + 1)))
+    size = tab.getTableauSize() #Obtain size from tableau
+    tableau = tab.getTableau()  #Obtain array from tableau
+    #Update rightmost column by performing algorithm one step at time
+    t = np.logical_xor(tableau[:, control + size], np.ones((1,2*size + 1))) 
     t = np.logical_xor(tableau[:, target], t)
     t = np.logical_and(tableau[:, control], np.logical_and(tableau[:, target + size], t))
     tableau[:, 2*size] = np.logical_xor(tableau[:, 2*size], t)
+    #Now rightmost column has been updated
+    
+    #updating x and z column according to algorithm
     tableau[:, target] = np.logical_xor(tableau[:, target], tableau[:, control])
     tableau[:, control + size] = np.logical_xor(tableau[:, control + size], tableau[:, target + size])
     return tableau

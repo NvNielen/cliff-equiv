@@ -18,12 +18,12 @@ import tableau
 
 # Apply the Hadamard gate to a qubit in the tableau
 def applyHadamard(tab, qubit_index):
-    CONST_SIZE=tab.getTableauSize()
-    tableau = tab.getTableau()
+    CONST_SIZE=tab.getTableauSize()  #Obtain size of tableau input
+    tableau = tab.getTableau()       #Obtain array of tableau input
     
-    for i in range(2 * CONST_SIZE):
+    for i in range(2 * CONST_SIZE):  #Perform algorithm on each row in tableau
         # Extract xia and zia
-        xia = tableau[i, qubit_index]
+        xia = tableau[i, qubit_index]               #obtaining x value and z value
         zia = tableau[i, qubit_index + CONST_SIZE]
 
         # Update 'ri' based on xia and zia
