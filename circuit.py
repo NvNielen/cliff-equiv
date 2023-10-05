@@ -36,7 +36,7 @@ class Circuit:
     """SETTERS"""
     # Set storeGenerators boolean value
     def setStoreGenerators(self, value):
-        if (value == True and not self.generators):
+        if (value == True and not hasattr(self, 'generators')):
             self.clearGenerators()
         self.storeGenerators = value
     """METHODS"""
