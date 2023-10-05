@@ -19,8 +19,9 @@ class Tableau:
     # return this set of generators
     def tableauToGenerators(self):
         n = self.size
-        generators = np.zeros((size, size))
-
+        generators = np.zeros((n, n))
+        tableau=self.tableau
+        
         # Calculate sign for each r (at index 2n) in stabilizer part of tableau (n to 2n)
         sign = np.power(-1, tableau[n:2*n,2*n])
 
@@ -34,8 +35,8 @@ class Tableau:
         # sign_i * Z, if x_i,j = 0, z_i,j = 1
         for j in range(n):
             generators[:,j] = np.where(tableau[n:2*n, j] == tableau[n:2*n, n+j],
-                        np.where(tableau[n:2*n, j] == 0, np.ones((size, 1))*sign*constants.GENI, np.ones((size, 1))*sign*constants.GENY),
-                        np.where(tableau[n:2*n, j] == 0, np.ones((size, 1))*sign*constants.GENX, np.ones((size, 1))*sign*constants.GENZ))
+                        np.where(tableau[n:2*n, j] == 0, np.ones((n, 1))*sign*constants.GENI, np.ones((n, 1))*sign*constants.GENY),
+                        np.where(tableau[n:2*n, j] == 0, np.ones((n, 1))*sign*constants.GENX, np.ones((n, 1))*sign*constants.GENZ))
         return generators
     # Convert set of generators to tableau
     # store tableau in this class
