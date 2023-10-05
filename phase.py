@@ -18,15 +18,15 @@ import numpy as np
 
 def Phasegate(tab,qubit):
     "Phase gate"
-    size = tab.getTableauSize()
-    tableau = tab.getTableau()
-    r=2*size
-    c= 2*size+1
-    n=size
+    size = tab.getTableauSize() #Obtain size of tableau input
+    tableau = tab.getTableau()  #Obtain array of tableau input
+    r=2*size                    #This is how large the tableau is in the y-direction
+    c= 2*size+1                 #This is how large the tableau is in the x direction
+    n=size                      #This is how many qubits in the system described by the tableau
     test_tab=tableau
-    for x in range(r):
-        test_tab[x,c-1] = np.logical_xor(test_tab[x,c-1],(test_tab[x,0]*test_tab[x,n]))
-        test_tab[x,n] = np.logical_xor(test_tab[x,n],test_tab[x,0])
+    for x in range(r): #Perform algorithm on each row in tableau
+        test_tab[x,c-1] = np.logical_xor(test_tab[x,c-1],(test_tab[x,0]*test_tab[x,n])) #Updating 'r' in the rightmost column of the tableau
+        test_tab[x,n] = np.logical_xor(test_tab[x,n],test_tab[x,0])                     #Updating the 'x' describing the generator of the qubit being affected
     return test_tab
 
 
