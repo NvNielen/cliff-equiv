@@ -15,4 +15,6 @@ class Tableau:
     # Get tableau size (value)
     def getTableauSize(self):
         return self.size
+    def setTableau(self, tab):
+        self.tableau = tab
     pass

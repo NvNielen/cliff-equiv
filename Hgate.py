@@ -7,35 +7,21 @@ Created on Tue Sep 19 11:50:58 2023
 import numpy as np
 import tableau
 
-# size of n
-#CONST_SIZE = 2
-
-# Create standard tableau:
-# a 2nx2n identity matrix stacked with a 2nx1 phase vector of zeros
-#def createTableau():
- #   return np.hstack(((np.identity(2*CONST_SIZE)), np.zeros((2*CONST_SIZE,1))))
-
-
 # Apply the Hadamard gate to a qubit in the tableau
-def applyHadamard(tab, qubit_index):
-    CONST_SIZE=tab.getTableauSize()  #Obtain size of tableau input
-    tableau = tab.getTableau()       #Obtain array of tableau input
-    
-    for i in range(2 * CONST_SIZE):  #Perform algorithm on each row in tableau
-        # Extract xia and zia
-        xia = tableau[i, qubit_index]               #obtaining x value and z value
-        zia = tableau[i, qubit_index + CONST_SIZE]
+def applyHadamard(tab, qubit):
+    size = tab.getTableauSize()
+    tableau = tab.getTableau()
 
-        # Update 'ri' based on xia and zia
-        tableau[i, 2 * CONST_SIZE] = np.logical_xor(tableau[i, 2 * CONST_SIZE], np.logical_and(xia, zia))
+    # Extract xia and zia
+    xia = np.copy(tableau[:2*size, qubit])
+    zia = np.copy(tableau[:2*size, qubit + size])
 
+    # Update 'ri' based on xia and zia
+    tableau[:2*size, 2*size] = np.logical_xor(tableau[:2*size, 2*size], np.logical_and(xia, zia))
 
-
-        # Swap xia and zia
-        tableau[i, qubit_index] = zia
-        tableau[i, qubit_index + CONST_SIZE] = xia
-
-    return tableau
+    # Swap xia and zia
+    tableau[:2*size, qubit] = zia
+    tableau[:2*size, qubit + size] = xia
 
 # Example usage:
 #tableau = createTableau()
@@ -45,6 +31,3 @@ def applyHadamard(tab, qubit_index):
 # Apply Hadamard gate to qubit 'a' (replace 'a' with your desired qubit index)
 #a = 0  # Change this value as needed
 #tableau = applyHadamard(tableau, a)
-
-#print("\nTableau after applying Hadamard gate to qubit", a)
-#print(tableau)
