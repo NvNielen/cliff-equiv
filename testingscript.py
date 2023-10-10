@@ -10,7 +10,7 @@ cir = circuit.Circuit(2)
 cir.setStoreGenerators(True)
 # Apply CNOT on control 0 and target 1, M on 0, H on 1 and P on 0 consectutively
 #cir.applyGates(np.array([constants.CGATE, 0, 1, constants.MGATE, 0, constants.HGATE, 1, constants.PGATE, 0]))
-cir.applyGates(np.array([constants.Hgate,0]))
+cir.applyGates(np.array([constants.HGATE,0]))
 #print(cir.getTableau().getTableau())
 print(cir.getGenerators())
 # Get number of gates in circuit, should be 4

@@ -2,12 +2,17 @@ import numpy as np
 import constants
 import random
 import tableau
+import sys
 
 class Circuit:
     # Create circuit with given qubits size, this size determines tableau size
     # Create tableau with given size, initiate gates array, storeGenerators
     # and generators array
     def __init__(self, size):
+        while size <= 0:
+            print("You tried to create a circuit with a qubit-size of", size)
+            size = int(input("This is invalid. Try again by entering an integer larger than 0: "))
+        self.qubitSize = size
         self.tableau = tableau.Tableau(size)
         # GATELIMIT determines maximum number of gates that can be applied
         self.gates = np.zeros((constants.GATELIMIT))
@@ -165,6 +170,36 @@ class Circuit:
     # optionally extra qubit for CNOT
     # e.g. [0,1,2,2,1] -> CN on control qubit 1 and target qubit 0, then H on qubit 1
     def applyGates(self, gates):
+        i = 0
+        g = 1
+        # The qubits for the gates are checked to have been selected correctly and are asked to be re-entered if they are incorrect  
+        while (i < gates.size):
+            if gates[i] == constants.CGATE:
+                if gates[i+1]==gates[i+2]:
+                    print("The control and target qubit for gate", g, "have the same value")
+                    gates[i+1] = int(input("Enter the control qubit (integer): "))
+                    gates[i+2] = int(input("Enter the target qubit (integer): "))
+                elif gates[i+1]>=self.qubitSize or gates[i+1]<0:
+                    print("The control qubit for gate", g, "must be an integer in the range of 0 to", self.qubitSize-1, "and cannot equal", gates[i+2], "(target qubit)")
+                    gates[i+1] = int(input("Enter the control qubit (integer): "))
+                elif gates[i+2]>=self.qubitSize or gates[i+2]<0:
+                    print("The target qubit for gate", g, "must be an integer in the range of 0 to", self.qubitSize-1, "and cannot equal", gates[i+1], "(control qubit)")
+                    gates[i+2] = int(input("Enter the target qubit (integer): "))
+                else:
+                    i += 3
+                    g += 1
+            elif gates[i] == constants.HGATE or gates[i] == constants.PGATE or gates[i] == constants.MGATE:
+                if gates[i+1]>=self.qubitSize or gates[i+1]<0:
+                    print("The qubit for gate", g, "must be an integer in the range of 0 to", self.qubitSize-1)
+                    gates[i+1] = int(input("Enter the qubit (integer): "))
+                else:
+                    i += 2
+                    g += 1
+            else:
+                print("The value entered to specify gate", g, "is invalid.")
+                print("The execution of the program will be stopped right now. Check whether the gates and the qubits they are being applied on have been entered correctly.")
+                sys.exit()
+        
         i = 0
         # For each set of (gate, qubit(s)), check type and run corresponding update method
         while (i < gates.size):
