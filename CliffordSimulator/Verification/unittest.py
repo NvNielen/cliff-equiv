@@ -1,9 +1,10 @@
+import sys
 import numpy as np
 import random
-import constants
+from CliffordSimulator.Implementation import constants
 import unittest
-import circuit
-import Verify_gen as vg
+from CliffordSimulator.Implementation import circuit
+from CliffordSimulator.Verification import verifygenerator as vg
 
 class testMGate(unittest.TestCase):
     def test_rowsum(self):

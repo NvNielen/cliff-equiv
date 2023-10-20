@@ -1,5 +1,5 @@
 import numpy as np
-import constants
+from CliffordSimulator.Implementation import constants
 
 class Tableau:
     # Create standard tableau where size is the number of qubits

@@ -1,5 +1,5 @@
-import circuit
-import constants
+from CliffordSimulator.Implementation import circuit
+from CliffordSimulator.Implementation import constants
 import stim
 import numpy as np
 

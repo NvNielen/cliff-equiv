@@ -1,7 +1,7 @@
 import numpy as np
-import constants
+from CliffordSimulator.Implementation import constants
 import random
-import tableau
+from CliffordSimulator.Implementation import tableau
 import sys
 
 class Circuit:
