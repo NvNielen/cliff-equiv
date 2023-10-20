@@ -22,11 +22,11 @@ class Tableau:
     # return this set of generators
     def tableauToGenerators(self):
         n = self.size
-        generators = np.zeros((2*n, n))
+        generators = np.zeros((2*n, n+1))
         tableau=self.tableau
         
         # Calculate sign for each r (at index 2n) in stabilizer part of tableau (n to 2n)
-        sign = np.power(-1, tableau[:2*n,2*n])
+        generators[:2*n, n] = np.power(-1, tableau[:2*n,2*n])
 
         # Create a 2D array with generators for each qubit
         # Each row in this array denotes a list of generators
@@ -38,13 +38,9 @@ class Tableau:
         # sign_i * Z, if x_i,j = 0, z_i,j = 1
         for j in range(n):
             generators[:,j] = np.where(tableau[:2*n, j] == tableau[:2*n, n+j],
-                        np.where(tableau[:2*n, j] == 0, np.ones((2*n))*sign*constants.GENI, np.ones((2*n))*sign*constants.GENY),
-                        np.where(tableau[:2*n, j] == 0, np.ones((2*n))*sign*constants.GENZ, np.ones((2*n))*sign*constants.GENX))
+                        np.where(tableau[:2*n, j] == 0, np.ones((2*n))*constants.GENI, np.ones((2*n))*constants.GENY),
+                        np.where(tableau[:2*n, j] == 0, np.ones((2*n))*constants.GENZ, np.ones((2*n))*constants.GENX))
         return generators
-    # Convert set of generators to tableau
-    # store tableau in this class
-    def generatorsToTableau(self):
-        pass
     # Clear tableau; set to a 2nx2n identity matrix 
     # horizontally stacked with a 2nx1 phase vector of zeros
     # and 1x2n "scratch space" vertically stacked

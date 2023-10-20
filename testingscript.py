@@ -1,6 +1,7 @@
 import numpy as np
 import circuit
 import constants
+import Verify_gen as vg
 
 # new test code here
 
@@ -10,8 +11,8 @@ cir = circuit.Circuit(2)
 cir.setStoreGenerators(True)
 # Apply CNOT on control 0 and target 1, M on 0, H on 1 and P on 0 consectutively
 #cir.applyGates(np.array([constants.CGATE, 0, 1, constants.MGATE, 0, constants.HGATE, 1, constants.PGATE, 0]))
-cir.applyGates(np.array([constants.HGATE,5]))
+cir.applyGates(np.array([constants.HGATE,1]))
 #print(cir.getTableau().getTableau())
-print(cir.getGenerators())
+# print(cir.getGenerators())
 # Get number of gates in circuit, should be 4
 #print(cir.getNumberOfGates())

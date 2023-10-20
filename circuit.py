@@ -93,7 +93,7 @@ class Circuit:
         zia = tableau[:2*size, qubit + size]
 
         # Update 'ri' based on xia and zia
-        tableau[:2*size,2*size] = np.logical_xor(tableau[:2*size,2*size],(xia*zia))
+        tableau[:2*size,2*size] = np.logical_xor(tableau[:2*size,2*size], np.logical_and(xia,zia))
         
         # Update zia based on xia and zia
         tableau[:2*size, qubit + size] = np.logical_xor(zia,xia)
@@ -157,8 +157,8 @@ class Circuit:
             tableau[p][a + size] = 1
             
             # Finally, return r_p as the measurement outcome. Increment gate results index
-            self.gateResults[gateResultsIndex] = tableau[p][2*size]
-            gateResultsIndex += 1
+            self.gateResults[self.gateResultsIndex] = tableau[p][2*size]
+            self.gateResultsIndex += 1
         else:
             # Case B: qubit a of the tableau in the range of x_(n+1)1 to x_(2n)1 contains no value 1
             # In this case the outcome is determinate, so measuring the state will not change it; the
@@ -172,8 +172,8 @@ class Circuit:
                 self.rowsum(size*2, index + size)
                 
             # Finally, return r_2n+1 as the measurement outcome. Increment gate results index
-            self.gateResults[gateResultsIndex] = tableau[2*size][2*size]
-            gateResultsIndex += 1
+            self.gateResults[self.gateResultsIndex] = tableau[2*size][2*size]
+            self.gateResultsIndex += 1
     # Gate abstract factory: given gate input, apply corresponding gate update rules
     # Gate input as follows: a linear list of gate type (0 to 3) followed by qubit and 
     # optionally extra qubit for CNOT
@@ -212,7 +212,7 @@ class Circuit:
         
         i = 0
         # For each set of (gate, qubit(s)), check type and run corresponding update method
-        while (i < gates.size):
+        while (i < l):
             if gates[i] == constants.CGATE:
                 self.applyCN(gates[i+1], gates[i+2])
                 i += 3
@@ -236,7 +236,7 @@ class Circuit:
     def clearGenerators(self):
         size = self.tableau.getTableauSize()
         # Store max number of gates times nxn matrices of each state of the tableau in the circuit
-        self.generators = np.zeros((round(constants.GATELIMIT/3),2*size,size))
+        self.generators = np.zeros((round(constants.GATELIMIT/3),2*size,size+1))
         self.generators[self.numberOfGates,:,:] = self.tableau.tableauToGenerators()
     # Clear gates array, then clear corresponding tableau and possibly generators array
     def clearGates(self):
