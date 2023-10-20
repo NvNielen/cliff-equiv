@@ -1,24 +1,17 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Sep 25 13:25:12 2023
+import numpy as np
+import circuit
+import constants
 
-@author: Wiggert
-"""
-from Hgate import applyHadamard as H
-from CNOT import updateCNOT as CN
-from phase import Phasegate as S
-from verify_gen import verify_gen as vg
-from Tableau_to_gen import tableau_to_gen as tg
-import tableau
+# new test code here
 
-n=2
-
-tab=tableau.Tableau(n)
-
-CN(tab,1,0)
-H(tab, 0)
-S(tab,0)
-print(tab.getTableau())
-print(tg(tab))
-vg(tg(tab))
-
+# Create circuit with 2 qubits
+cir = circuit.Circuit(2)
+#print(cir.getTableau().getTableau())
+cir.setStoreGenerators(True)
+# Apply CNOT on control 0 and target 1, M on 0, H on 1 and P on 0 consectutively
+#cir.applyGates(np.array([constants.CGATE, 0, 1, constants.MGATE, 0, constants.HGATE, 1, constants.PGATE, 0]))
+cir.applyGates(np.array([constants.HGATE,5]))
+#print(cir.getTableau().getTableau())
+print(cir.getGenerators())
+# Get number of gates in circuit, should be 4
+#print(cir.getNumberOfGates())
