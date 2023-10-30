@@ -9,6 +9,7 @@ class Circuit:
     # Create tableau with given size, initiate gates array, storeGenerators
     # and generators array
     def __init__(self, size):
+        # Let the user re-enter a value for the size of the circuit if the user has entered a value smaller or equal to zero
         while size <= 0:
             print("You tried to create a circuit with a qubit-size of", size)
             size = int(input("This is invalid. Try again by entering an integer larger than 0: "))
@@ -175,26 +176,33 @@ class Circuit:
         # The qubits for the gates are checked to have been selected correctly and are asked to be re-entered if they are incorrect  
         while (i < gates.size):
             if gates[i] == constants.CGATE:
+                # Let user re-enter the control and target bit of the CNOT gate if they are the same
                 if gates[i+1]==gates[i+2]:
                     print("The control and target qubit for gate", g, "have the same value")
                     gates[i+1] = int(input("Enter the control qubit (integer): "))
                     gates[i+2] = int(input("Enter the target qubit (integer): "))
+                # Let user re-enter the control bit of the CNOT gate if it is too large or too small
                 elif gates[i+1]>=self.qubitSize or gates[i+1]<0:
                     print("The control qubit for gate", g, "must be an integer in the range of 0 to", self.qubitSize-1, "and cannot equal", gates[i+2], "(target qubit)")
                     gates[i+1] = int(input("Enter the control qubit (integer): "))
+                # Let user re-enter the target bit of the CNOT gate if it is too large or too small
                 elif gates[i+2]>=self.qubitSize or gates[i+2]<0:
                     print("The target qubit for gate", g, "must be an integer in the range of 0 to", self.qubitSize-1, "and cannot equal", gates[i+1], "(control qubit)")
                     gates[i+2] = int(input("Enter the target qubit (integer): "))
+                # If the entered bits are correct, move on to the next gate
                 else:
                     i += 3
                     g += 1
             elif gates[i] == constants.HGATE or gates[i] == constants.PGATE or gates[i] == constants.MGATE:
+                # Let user re-enter the bit of the Hadamard, phase or measurement gate if it is too large or too small
                 if gates[i+1]>=self.qubitSize or gates[i+1]<0:
                     print("The qubit for gate", g, "must be an integer in the range of 0 to", self.qubitSize-1)
                     gates[i+1] = int(input("Enter the qubit (integer): "))
+                # If the entered bit is correct, move on to the next gate
                 else:
                     i += 2
                     g += 1
+            # If the entered value for the gate is invalid, the execution of the program will be stopped 
             else:
                 print("The value entered to specify gate", g, "is invalid.")
                 print("The execution of the program will be stopped right now. Check whether the gates and the qubits they are being applied on have been entered correctly.")
