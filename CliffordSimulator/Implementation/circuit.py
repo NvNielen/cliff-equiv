@@ -9,7 +9,8 @@ class Circuit:
     # Create tableau with given size, initiate gates array, storeGenerators
     # and generators array
     def __init__(self, size: int):
-        while size <= 0:
+        #Ensuring user is not allowed to input an invalid value
+        while size <= 0: 
             raise ValueError("You tried to create a circuit with a qubit-size of " + str(size) +
                               ". This is invalid. Try again by entering an integer larger than 0: ")
         self.qubitSize = size
@@ -57,7 +58,7 @@ class Circuit:
         size = self.tableau.getTableauSize()
         tableau = self.tableau.getTableau()
 
-        # For all i in {1,...,2n}, set r_i = r_i ⊕ x_i,control*z_i,target(x_i,target ⊕ z_i,control ⊕ 1)
+        # For all i in {1,...,2n}, set r_i = r_i ⊕ x_i,control*z_i,target(x_i,target ⊕ z_i,control ⊕ 1). 
         t = np.logical_xor(tableau[:2*size, control + size], np.ones((1,2*size), dtype=np.bool))
         t = np.logical_xor(tableau[:2*size, target], t)
         t = np.logical_and(tableau[:2*size, control], np.logical_and(tableau[:2*size, target + size], t))
@@ -179,8 +180,8 @@ class Circuit:
     # optionally extra qubit for CNOT
     # e.g. [0,1,2,2,1] -> CN on control qubit 1 and target qubit 0, then H on qubit 1
     def applyGates(self, gates):
-        i = 0
-        g = 1
+        i = 0 
+        g = 1 #index keeping track of how many gates have been applied
         l = gates.size # size of gates array
         # The qubits for the gates are checked to have been selected correctly
         while (i < l):
