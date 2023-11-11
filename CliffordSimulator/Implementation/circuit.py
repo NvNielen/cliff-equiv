@@ -9,7 +9,7 @@ class Circuit:
     # Create tableau with given size, initiate gates array, storeGenerators
     # and generators array
     def __init__(self, size: int):
-        #Ensuring user is not allowed to input an invalid value
+        # Ensuring user is not allowed to input an invalid value
         while size <= 0: 
             raise ValueError("You tried to create a circuit with a qubit-size of " + str(size) +
                               ". This is invalid. Try again by entering an integer larger than 0: ")
@@ -186,28 +186,37 @@ class Circuit:
         # The qubits for the gates are checked to have been selected correctly
         while (i < l):
             if gates[i] == constants.CGATE:
+                # Return Index Error if qubit out of range
                 if i+1 >= l or i+2 >= l:
                     raise IndexError("No target/control qubits given")
+                # Return Value Error if the control and target bit if they are the same
                 elif gates[i+1]==gates[i+2]:
                     raise ValueError("The control and target qubit for gate " + str(g) + " have the same value")
+                # Return Value Error of the CNOT gate if it is too large or too small
                 elif gates[i+1]>=self.qubitSize or gates[i+1]<0:
                     raise ValueError("The control qubit for gate " + str(g) + 
                                      " must be an integer in the range of 0 to " + str(self.qubitSize-1) + 
                                      " and cannot equal " + str(gates[i+2]) + " (target qubit)")
+                # Return Value Error of the CNOT gate if it is too large or too small
                 elif gates[i+2]>=self.qubitSize or gates[i+2]<0:
                     raise ValueError("The target qubit for gate " + str(g) + " must be an integer in the range of 0 to " + 
                                      str(self.qubitSize-1) + " and cannot equal " + str(gates[i+1]) + "(control qubit)")
+                # If the entered bits are correct, move on to the next gate
                 else:
                     i += 3
                     g += 1
             elif gates[i] == constants.HGATE or gates[i] == constants.PGATE or gates[i] == constants.MGATE:
+                # Return Index Error if qubit out of range
                 if i+1 >= l:
                     raise IndexError("No qubit given")
+                # Return Value Error of the H/P/M gate if it is too large or too small
                 elif gates[i+1]>=self.qubitSize or gates[i+1]<0:
                     raise ValueError("The qubit for gate " + str(g) + " must be an integer in the range of 0 to " + str(self.qubitSize-1))
+                # If the entered bits are correct, move on to the next gate
                 else:
                     i += 2
                     g += 1
+            # If the entered value for the gate is invalid, the execution of the program will be stopped 
             else:
                 raise ValueError("The value entered to specify gate " + g + " is invalid.")
         
